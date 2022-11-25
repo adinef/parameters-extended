@@ -71,8 +71,8 @@ public final class ParamsExtended implements ParameterResolver {
             /* For other methods, returns an unmodifiable instance */
             return parameters.readOnly();
         }
-        return parameterContext.findAnnotation(Name.class)
-            .map(Name::value)
+        return parameterContext.findAnnotation(Named.class)
+            .map(Named::value)
             .map(parameters::get)
             .orElseGet(() -> parameters.get(paramType));
     }

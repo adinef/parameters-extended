@@ -26,7 +26,7 @@ class ParamsExtendedTest {
     }
 
     @Test
-    void testTestMethodGetsNamedArguments(@Name(NAMED_FIRST_NAME) First first, @Name(NAMED_SECOND_NAME) Second second) {
+    void testTestMethodGetsNamedArguments(@Named(NAMED_FIRST_NAME) First first, @Named(NAMED_SECOND_NAME) Second second) {
         assertEquals(NAMED_FIRST_NAME, first.getName());
         assertEquals(NAMED_SECOND_NAME, second.getName());
     }

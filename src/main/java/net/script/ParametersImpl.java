@@ -84,7 +84,7 @@ final class ParametersImpl implements Parameters {
      * @return \c true, if parameter is present, \c false otherwise
      */
     final boolean checkPresence(ParameterContext context) {
-        return context.findAnnotation(Name.class)
+        return context.findAnnotation(Named.class)
             .map(named -> {
                 /* Check, if parameters is saved in the 'named' bucket */
                 final Object argument = namedInstances.get(named.value());
