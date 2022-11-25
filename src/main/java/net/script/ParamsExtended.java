@@ -49,7 +49,7 @@ public final class ParamsExtended implements ParameterResolver {
     }
 
     /**
-     * For methods annotated with @BeforeClass, injects Parameters type (if requested) that is modifiable.
+     * For methods annotated with @BeforeAll, injects Parameters type (if requested) that is modifiable.
      * If a regular test method request Parameters type argument, an unmodifiable (wrapping) Parameters instance is returned.
      *
      * A @Named annotation takes precedence in a check, so if a parameter with given name was registered,
@@ -64,7 +64,7 @@ public final class ParamsExtended implements ParameterResolver {
         /* First, check if method request Parameters */
         final Class<?> paramType = parameterContext.getParameter().getType();
         if (paramType.isInstance(parameters)) {
-            /* When a method annotated with @BeforeClass, return regular instance */
+            /* When a method annotated with @BeforeAll, return regular instance */
             if (isSetup(parameterContext)) {
                 return parameters;
             }
