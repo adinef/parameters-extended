@@ -17,7 +17,7 @@ class ParamsExtendedTest {
     private static final String NAMED_SECOND_NAME = "Again";
 
     @Parameters.Setup
-    static void setUp(Parameters parameters) {
+    private static void setUp(Parameters parameters) {
         parameters
             .add(new First(FIRST_NAME))
             .add(new Second(SECOND_NAME))

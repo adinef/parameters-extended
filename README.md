@@ -7,7 +7,7 @@ This project extends the possibility in a very simple manner to introduce a new 
 In JUnit 5, when a method annotated with `@BeforeAll` is used for creating objects used throughout the tests,
 the created instances need to be stored in static fields.
 
-To encapsulate and remove possibility of side-effect, where multiple tests may (for some reason)
+To encapsulate and remove possibility of side effect, where multiple tests may (for some reason)
 modify such variables, this project has been introduced.
 
 Additionally, it adds functionality of named parameters.
@@ -20,15 +20,15 @@ To use extension, annotate your test class with:
 void TestClass { ... }
 ```
 
-In set up method annotated with `@BeforeAll`, parameters can be set following way:
+In set up method annotated with `@Parameters.Setup`, parameters can be set following way:
 ```java
 import org.junit.jupiter.api.BeforeAll;
 
 @ExtendWith(ParamsExtended.class)
 void TestClass {
 
-    @BeforeAll
-    static void setUp(Parameters parameters) {
+    @Parameters.Setup
+    private static void setUp(Parameters parameters) {
         parameters
                 .add(new Integer(5))
                 .addNamed("another", "Hello World!");
@@ -49,7 +49,7 @@ import org.junit.jupiter.api.Test;
     /* [...] */
 ```
 Test method can also directly get `Parameters` instance, 
-however modification is only possible in a method annotated with `@BeforeAll`.
+however modification is only possible in a method annotated with `@Parameters.Setup`.
 
 ```java
 import org.junit.jupiter.api.Test;
