@@ -14,11 +14,10 @@ import java.util.Map;
  */
 final class ParametersImpl implements Parameters {
 
-    private final Map<Class<?>, Object> instances = new HashMap<>();
-    private final Map<String, Object> namedInstances = new HashMap<>();
+    private final Map<String, Object> instances = new HashMap<>();
 
     /**
-     * Tries to put new parameter into 'named' bucket.
+     * Tries to put new parameter into bucket.
      * When any argument was already registered by this name, fails the tests with appropriate message.
      *
      * @param name name for the parameter
@@ -27,54 +26,23 @@ final class ParametersImpl implements Parameters {
      */
     @Override
     public Parameters addNamed(String name, Object object) {
-        final boolean added = namedInstances.put(name, object) == null;
-        if (!added) {
+        if (instances.containsKey(name)) {
             throw new ParameterResolutionException("Argument for " + name + " was already registered");
         }
+        instances.put(name, object);
         return this;
     }
 
     /**
-     * Tries to put new parameter into class type bucket.
-     * When any argument was already registered by the class, fails the tests with appropriate message.
-     *
-     * @param object argument to add to class type bucket
-     * @return self
-     * @throws ParameterResolutionException when any argument with given type was already present in the bucket
-     */
-    @Override
-    public final Parameters add(Object object) {
-        final boolean added = instances.put(object.getClass(), object) == null;
-        if (!added) {
-            throw new ParameterResolutionException("Argument for " + object.getClass() + " was already registered");
-        }
-        return this;
-    }
-
-    /**
-     * Gets the parameter registered in class type bucket.
-     * If none is present, a null will be returned, although this should not happen through ParameterResolver.
-     *
-     * @param clazz class of parameter
-     * @param <T> type of class
-     * @return parameter under given name from class type bucket
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public final <T> T get(Class<T> clazz) {
-        return (T) instances.get(clazz);
-    }
-
-    /**
-     * Gets the parameter registered under 'name' from the 'named' bucket.
+     * Gets the parameter registered under 'name' from the bucket.
      * If none is present, a null will be returned, although this should not happen through ParameterResolver.
      *
      * @param name name of the parameter
-     * @return parameter under given name from 'named' bucket
+     * @return parameter under given name from bucket
      */
     @Override
     public Object get(String name) {
-        return namedInstances.get(name);
+        return instances.get(name);
     }
 
     /**
@@ -87,7 +55,7 @@ final class ParametersImpl implements Parameters {
         return context.findAnnotation(Named.class)
             .map(named -> {
                 /* Check, if parameters is saved in the 'named' bucket */
-                final Object argument = namedInstances.get(named.value());
+                final Object argument = instances.get(named.value());
                 if (argument == null) {
                     throw new ParameterResolutionException("No named argument registered for: " + named.value());
                 }
@@ -101,30 +69,21 @@ final class ParametersImpl implements Parameters {
                 return true;
             })
             .orElseGet(() ->
-                /* Fallback to class registered arguments bucket */
-                instances.containsKey(context.getParameter().getType()));
+                /* Fallback to class registered arguments in the bucket */
+                instances.containsKey(context.getParameter().getType().getCanonicalName()));
     }
 
     /**
-     * Creates a new instance of Arguments, that is unmodifiable.
+     * Creates a new instance of Parameters, that is unmodifiable.
      *
-     * @return new unmodifiable implementation of Arguments interface
+     * @return new unmodifiable implementation of Parameters interface
      */
     final Parameters readOnly() {
         return new Parameters() {
+
             @Override
             public Parameters addNamed(String name, Object object) {
-                return ParametersImpl.this.addNamed(name, object);
-            }
-
-            @Override
-            public Parameters add(Object object) {
-                throw new UnsupportedOperationException("Cannot modify arguments in the tests.");
-            }
-
-            @Override
-            public <T> T get(Class<T> clazz) {
-                return ParametersImpl.this.get(clazz);
+                throw new UnsupportedOperationException("Cannot modify parameters.");
             }
 
             @Override

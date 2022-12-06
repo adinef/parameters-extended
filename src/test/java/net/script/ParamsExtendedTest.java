@@ -16,7 +16,7 @@ class ParamsExtendedTest {
     private static final String NAMED_FIRST_NAME = "Welcome";
     private static final String NAMED_SECOND_NAME = "Again";
 
-    @BeforeAll
+    @Parameters.Setup
     static void setUp(Parameters parameters) {
         parameters
             .add(new First(FIRST_NAME))
